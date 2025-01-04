@@ -2,23 +2,23 @@
 
 ## Executive Summary
 
-Financial institutions rely on robust and secure network infrastructures to ensure uninterrupted services and meet strict regulatory standards. Operating dual data centers (DC1 and DC2) allows for seamless failover and operational rotations, ensuring continuous operations during maintenance, upgrades, or unexpected outages. Achieving configuration parity between these data centers, while accommodating their unique configurations, requires a systematic and robust approach.
+Financial institutions rely on robust and secure network infrastructures to ensure uninterrupted services and meet strict standards. Operating dual data centers (DC1 and DC2) allows for seamless failover and operational rotations, ensuring continuous operations during maintenance, upgrades, or unexpected outages. Achieving configuration parity between these data centers, while accommodating their unique configurations, requires a systematic and robust approach.
 
-This document presents a comprehensive solution based on five key pillars:
+This document presents a possible solution based on five pillars:
 
-1. Golden Source: A centralized Git repository acts as the single source of truth for all configurations, eliminating ambiguity and ensuring version control of all changes.
+1. Golden Source: A centralized Git repository acts as the single source of truth for all configurations.
 
-2. Testing: Comprehensive testing validates configurations through baseline tests (ensuring fundamental requirements are met) and dynamic tests (verifying operational behavior under various conditions).
+2. Testing: Testing validates configurations through baseline tests (ensuring fundamental requirements are met) and dynamic tests (verifying operational behavior under various conditions).
 
-3. CI Pipeline: A continuous integration pipeline, powered by Jenkins and integrated with Itential for automation execution, ensures systematic processing and deployment of changes.
+3. CI Pipeline: A continuous integration pipeline, using Jenkins and integrated with Itential for automation execution, ensures systematic processing and deployment of changes.
 
-4. Transactional Deployments: Changes are applied atomically across both data centers, with built-in rollback capabilities to ensure that failed deployments do not leave systems in an inconsistent state.
+4. Configuration Parity: Changes are applied atomically across both data centers, with built-in rollback capabilities to ensure that failed deployments do not leave systems in an inconsistent state.
 
-5. Operating Model: Robust governance through mandatory code reviews, pull requests, and comprehensive audit trails maintains quality and compliance.
+5. Governance: Governance through mandatory code reviews, pull requests, and metrics reporting.
 
-This pillar-based approach ensures consistent and reliable application of changes across both data centers while maintaining functional equivalence. It effectively prevents configuration drift, enables seamless data center rotations, and supports resilient network operations that meet the stringent requirements of financial institutions.
+This pillar-based approach helps prevent configuration drift, facilitates seamless data center rotations, and supports resilient network operations that meet the stringent requirements of financial institutions.
 
-## Possible Technical Solution
+## Technical Solution
 This section provides a hypothetical solution for achieving configuration parity between two data centers. using the following tools:
 
 - Git
