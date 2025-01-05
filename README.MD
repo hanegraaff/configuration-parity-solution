@@ -2,27 +2,27 @@
 
 ## Executive Summary
 
-Financial institutions rely on robust and secure network infrastructures to ensure uninterrupted services and meet strict standards. Operating dual data centers (DC1 and DC2) allows for seamless failover and operational rotations, ensuring continuous operations during maintenance, upgrades, or unexpected outages. Achieving configuration parity between these data centers, while accommodating their unique configurations, requires a systematic and robust approach.
+Financial institutions rely on robust and secure network infrastructures to ensure uninterrupted services and meet regulatory standards. Operating dual data centers (DC1 and DC2) allows for seamless failover and operational rotations, ensuring continuous operations during maintenance, upgrades, or unexpected outages. Achieving configuration parity between these data centers, while accommodating their unique configurations, requires a systematic and robust approach.
 
-This document presents a possible solution based on five pillars:
+This document presents a possible solution tailored for a networking team based on five key components:
 
-1. Golden Source: A centralized Git repository acts as the single source of truth for all configurations.
+1. Golden Source: A centralized Git repository acts as the single source of truth for all network configurations.
 
-2. Testing: Testing validates configurations through baseline tests (ensuring fundamental requirements are met) and dynamic tests (verifying operational behavior under various conditions).
+2. Testing: Testing validates configurations through baseline tests (ensuring fundamental requirements are met) and application-specific tests (verifying operational behavior under various conditions).
 
-3. CI Pipeline: A continuous integration pipeline, using Jenkins and integrated with Itential for automation execution, ensures systematic processing and deployment of changes.
+3. CI Pipeline: A continuous integration pipeline, using Jenkins and integrated with Itential (responsible for automation execution), ensures consistent processing and deployment of changes.
 
 4. Configuration Parity: Changes are applied atomically across both data centers, with built-in rollback capabilities to ensure that failed deployments do not leave systems in an inconsistent state.
 
-5. Governance: Governance through mandatory code reviews, pull requests, and metrics reporting.
+5. Governance: Governance through development practices (code reviews, pull requests, etc.), metrics and reporting.
 
-This pillar-based approach helps prevent configuration drift, facilitates seamless data center rotations, and supports resilient network operations that meet the stringent requirements of financial institutions.
+This approach helps prevent configuration drift, facilitates seamless data center rotations, and supports resilient network operations that meet the stringent requirements of financial institutions.
 
 ## Technical Solution
-This section provides a hypothetical solution for achieving configuration parity between two data centers. using the following tools:
+This section provides a hypothetical solution for achieving configuration parity between two data centers. using the following technologies:
 
 - Git
-- Ansible
+- Ansible (Open Source & AAP)
 - Jenkins
 - Itential
 
@@ -30,7 +30,7 @@ This section provides a hypothetical solution for achieving configuration parity
 
 Configuration drift occurs when manual or untracked changes lead to inconsistencies between DC1 and DC2. Transitioning all network configurations into version-controlled code stored in a centralized Git repository mitigates this risk. Ansible serves as the orchestration tool to automatically apply and align configurations based on the golden source in Git. This ensures every change is traceable, reproducible, and consistently applied across both data centers.
 
-### Repository Structure and Golden Source
+### Golden Source Repository Structure
 
 To accommodate unique configurations for DC1 and DC2 while maintaining functional parity, the Git repository is organized to separate data center-specific variables and shared configurations:
 
@@ -72,7 +72,7 @@ The repository structure enables three benefits:
 
 2. Modular Adoption: The role-based structure facilitates incremental Infrastructure-as-Code adoption. Teams can begin by managing specific device types (e.g., only firewalls initially) through automation, then expand to other network components as processes mature. Common configurations are centralized under shared_vars/ to maintain consistency.
 
-3. Change Traceability: By following GitFlow practices, all configuration changes are tied to specific branches, pull requests, and releases. This provides a clear audit trail - any configuration issue can be traced back to its originating change, release version, and associated approval history, enabling quick root cause analysis and remediation. Tools like Bitbucket's "blame" feature make this process even simpler by allowing engineers to quickly identify who made specific changes, when they were made, and which commit introduced them, providing immediate visibility into the history of any configuration line.
+3. Change Traceability: By following GitFlow practices, all configuration changes are tied to specific branches, pull requests, and releases. This provides a clear audit trail - any configuration issue can be traced back to its originating change, release version, and associated approval history, enabling quick root cause analysis and remediation. Tools like Bitbucket's "blame" button make this process even simpler by allowing engineers to quickly identify who made specific changes, when they were made, and which release introduced them, providing immediate visibility into the history of any configuration line.
 
 ### Testing
 
@@ -161,7 +161,7 @@ The baseline test playbook might look like this.
 
 Application-specific tests validate the operational behavior of network components for specific applications. These tests can be defined in the `ansible/tests/application` directory.
 
-For example, the following playbook validates the connectivty between a Tomcat server and a database for some critical application.
+For example, the following playbook validates the connectivty between a Tomcat server and a database for a critical application.
 
 ```yaml
 - name: Validate Tomcat to Database connectivity for DC1
@@ -251,7 +251,7 @@ This approach provides the following benefits:
 
 A CICD pipeline ensures that configuration updates are thoroughly tested and safely deployed to DC1 and DC2. Jenkins orchestrates the pipeline, while Itential performs the actual changes.
 
-This is one example of how a CI pipeline could be implemented:
+This is one example of how a CI pipeline could be implemented that releases changes based on a repo and branch.
 
 ```groovy
 pipeline {
@@ -310,7 +310,9 @@ pipeline {
 }
 ```
 
-### Workflow Overview
+### Developer Experience
+
+Here is a high level overview of how a developer would experience the solution.
 
 1. Engineers modify configurations in the Itential IDE and create a pull request in Bitbucket.
 2. The Jenkins pipeline performs the following automated checks and tests to validate changes:
@@ -320,7 +322,7 @@ pipeline {
 
 ### Configuration Parity Solutions
 
-Maintaining configuration parity across dual data centers involves the same core practices: storing network configurations in Bitbucket as the golden source, validating changes through Jenkins, and automating deployments with Itential and Ansible. The following two approaches illustrate distinct ways of orchestrating these components, depending on organizational preferences and tooling maturity.
+Maintaining configuration parity across dual data centers involves the same core practices: storing network configurations in Bitbucket as the golden source, validating changes through Jenkins, and automating deployments with Itential and Ansible. The following are two variants of the same approach that illustrate ways of orchestrating these components, depending on organizational preferences and tooling maturity.
 
 #### Common Elements
 
@@ -334,7 +336,7 @@ After Jenkins confirms a change is stable, Itential coordinates the final deploy
 4.	Rollback and Post-Deployment Checks
 If a deployment fails, Bitbucket’s version history and dedicated “rollback” playbooks revert each data center to the previous known good state. Post-deployment verifications run after successful updates to confirm that DC1 and DC2 remain in sync.
 
-Itential as the means of achiecing parity
+**Itential as the means of achieving parity**
 
 Parity may be achieved using Itential's workflow engine. Below is an example structure (pseudocode) for a workflow that can handle dual data center deployments and rollback-on-failure. 
 
@@ -391,13 +393,13 @@ workflow:
         message: "Deployment failed. Rollback initiated."
 ```
 
-#### Option A: Jenkins as the Primary Orchestrator, Itential for Multi-DC Coordination
+#### Option A: Jenkins for CI, Itential for orchestration and execution
 
 In this model, Jenkins retains overall control of the pipeline and calls Itential only for the actual changes. After developers trigger a Jenkins job, it checks out the relevant Bitbucket branch, runs all tests, and, if everything passes, sends a deployment request to Itential. Itential then applies the new configurations to DC1 and DC2 in a coordinated, transactional manner. If any step fails—either during DC1 or DC2 updates—Itential handles the rollback, pulling the last stable commit from Bitbucket and restoring each data center to its prior configuration.
 
 This setup keeps the CI process entirely within Jenkins while allowing Itential to focus on operational workflows like scheduling changes and orchestrating rollbacks across the data centers.
 
-#### Option B: Ansible Automation Platform (AAP) with Itential as the Workflow Orchestrator
+#### Option B: Jenkins for CI, Itential orchestration, AAP for execution
 
 This approach introduces an additional layer—Ansible Automation Platform (AAP)—to run playbooks and manage inventories at scale. Jenkins still performs manual CI checks whenever a new release is ready for testing or deployment. If the changes pass validation, an engineer triggers the pipeline to update AAP job templates with the latest commit ID or version tag from Bitbucket. Itential then invokes those AAP jobs to deploy the approved changes, running them first on DC1 and then on DC2 (or in parallel, depending on defined workflows).
 
