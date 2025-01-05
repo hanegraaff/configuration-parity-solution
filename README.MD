@@ -20,7 +20,7 @@ This approach helps prevent configuration drift, facilitates seamless data cente
 
 ### What's not covered
 
-This document does present a complete solution and should be used to discuss ideas. For example, it does not cover:
+This document does not present a complete solution and should be used to discuss ideas. For example, it does not cover:
 
 1. Drift detection and remediation solution: How to detect changes made outside automation and remedy them.
 2. A testing framework that would prove the changes to DC1 and DC2 are equivalent.
