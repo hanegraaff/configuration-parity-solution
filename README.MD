@@ -18,6 +18,15 @@ This document presents a possible solution tailored for a networking team based 
 
 This approach helps prevent configuration drift, facilitates seamless data center rotations, and supports resilient network operations that meet the stringent requirements of financial institutions.
 
+### What's not covered
+
+This document does present a complete solution and should be used to discuss ideas. For example, it does not cover:
+
+1. Drift detection and remediation solution: How to detect changes made outside automation and remedy them.
+2. A testing framework that would prove the changes to DC1 and DC2 are equivalent.
+3. A regresstion testing framework that would ensure that new changes aren't invalidating existing functionality.
+
+
 ## Technical Solution
 This section provides a hypothetical solution for achieving configuration parity between two data centers. using the following technologies:
 
