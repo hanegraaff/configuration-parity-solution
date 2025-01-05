@@ -240,7 +240,7 @@ ansible-playbook registered_tests.yml --tags firewall
 ansible-playbook registered_tests.yml --extra-vars "test_name=Firewall Rules Validation"
 ```
 
-This approach provides several benefits:
+This approach provides the following benefits:
 - Easy addition of new tests without modifying existing code
 - Flexible organization and categorization of tests
 - Control over test execution order and dependencies
